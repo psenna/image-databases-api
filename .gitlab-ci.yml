@@ -1,0 +1,28 @@
+stages:
+  - test
+  - deploy
+
+variables:
+  PYTHON_IMAGE:  python:3.10-slim-buster
+
+test:
+  stage: test
+  image: $PYTHON_IMAGE
+  coverage: '/^TOTAL.+?(\d+\%)$/'
+  before_script:
+  - pip3 install -r requirements-dev.txt
+  script:
+  - pytest --cov=app tests/
+  
+pages:
+  stage: deploy
+  image: $PYTHON_IMAGE
+  before_script:
+  - pip3 install mkdocs-material
+  script:
+  - cd docs
+  - mkdocs build --strict --verbose
+  - cp -r site/ ../public/
+  artifacts:
+    paths:
+    - public
