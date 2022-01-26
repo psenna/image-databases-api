@@ -1,22 +1,25 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-  - test
-  - deploy
-
+- test
+- deploy
 variables:
-  PYTHON_IMAGE:  python:3.10-slim-buster
-
+  PYTHON_IMAGE: python:3.10-slim-buster
 test:
   stage: test
-  image: $PYTHON_IMAGE
-  coverage: '/^TOTAL.+?(\d+\%)$/'
+  image: "$PYTHON_IMAGE"
+  coverage: "/^TOTAL.+?(\\d+\\%)$/"
   before_script:
   - pip3 install -r requirements-dev.txt
   script:
   - pytest --cov=app tests/
-  
 pages:
   stage: deploy
-  image: $PYTHON_IMAGE
+  image: "$PYTHON_IMAGE"
   before_script:
   - pip3 install mkdocs-material
   script:
@@ -26,3 +29,7 @@ pages:
   artifacts:
     paths:
     - public
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
