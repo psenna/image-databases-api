@@ -1,9 +1,11 @@
 stages:
 - test
 - deploy
+
 variables:
   PYTHON_IMAGE: python:3.10-slim-buster
-test:
+
+test-api:
   stage: test
   image: "$PYTHON_IMAGE"
   coverage: "/^TOTAL.+?(\\d+\\%)$/"
@@ -11,6 +13,34 @@ test:
   - pip3 install -r requirements-dev.txt
   script:
   - pytest --cov=app tests/
+
+test-migrations-sqlite:
+  variables:
+    DATABASE_URL: sqlite:///db.sqlite
+  stage: test
+  image: "$PYTHON_IMAGE"
+  before_script:
+  - pip3 install -r requirements-dev.txt
+  script:
+  - cd app
+  - alembic -x dbPath=$DATABASE_URL upgrade head
+
+test-migrations-mysql:
+  variables:
+    MYSQL_PASSWORD: mysql
+    MYSQL_USER: mysql
+    MYSQL_DATABASE: mysql
+    DATABASE_URL: mysql+pymysql://$MYSQL_USER:$MYSQL_PASSWORD@mysql-test-db/$MYSQL_DATABASE?charset=utf8mb4
+  services:
+    - name: mysql:8
+      alias: mysql-test-db
+  stage: test
+  image: "$PYTHON_IMAGE"
+  before_script:
+  - pip3 install -r requirements-dev.txt
+  script:
+  - cd app
+  - alembic -x dbPath=$DATABASE_URL upgrade head
 
 pages:
   stage: deploy
