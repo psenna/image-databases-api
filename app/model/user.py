@@ -8,6 +8,6 @@ class User(ormar.Model):
         tablename = "users"
 
     id: int = ormar.Integer(primary_key=True)
-    name: str = ormar.String(max_length=255)
-    email: str = ormar.String(max_length=255)
+    name: str = ormar.String(max_length=100)
+    email: str = ormar.String(max_length=100)
     hash_password: str = ormar.String(max_length=255)
