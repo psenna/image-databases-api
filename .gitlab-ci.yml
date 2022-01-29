@@ -5,26 +5,25 @@ stages:
 variables:
   PYTHON_IMAGE: python:3.10-slim-buster
 
-test-api:
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+test-api-sqlite:
   stage: test
   image: "$PYTHON_IMAGE"
   coverage: "/^TOTAL.+?(\\d+\\%)$/"
   before_script:
-  - pip3 install -r requirements-dev.txt
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
   script:
+  - pip3 install -r requirements-dev.txt
   - pytest --cov=app tests/
 
-test-migrations-sqlite:
-  variables:
-    DATABASE_URL: sqlite:///db.sqlite
-  stage: test
-  image: "$PYTHON_IMAGE"
-  before_script:
-  - pip3 install -r requirements-dev.txt
-  script:
-  - python3 app/run_migration.py
 
-test-migrations-mysql:
+test-api-mysql:
   variables:
     MYSQL_PASSWORD: mysql
     MYSQL_USER: mysql
@@ -35,10 +34,14 @@ test-migrations-mysql:
       alias: mysql-test-db
   stage: test
   image: "$PYTHON_IMAGE"
+  coverage: "/^TOTAL.+?(\\d+\\%)$/"
   before_script:
-  - pip3 install -r requirements-dev.txt
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
   script:
-  - python3 app/run_migration.py
+  - pip3 install -r requirements-dev.txt
+  - pytest --cov=app tests/
 
 pages:
   stage: deploy
