@@ -22,8 +22,7 @@ test-migrations-sqlite:
   before_script:
   - pip3 install -r requirements-dev.txt
   script:
-  - cd app
-  - alembic -x dbPath=$DATABASE_URL upgrade head
+  - python3 app/run_migration.py
 
 test-migrations-mysql:
   variables:
@@ -39,8 +38,7 @@ test-migrations-mysql:
   before_script:
   - pip3 install -r requirements-dev.txt
   script:
-  - cd app
-  - alembic -x dbPath=$DATABASE_URL upgrade head
+  - python3 app/run_migration.py
 
 pages:
   stage: deploy
