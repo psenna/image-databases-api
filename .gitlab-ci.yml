@@ -20,7 +20,6 @@ test-api-sqlite:
   - source venv/bin/activate
   script:
   - pip3 install -r requirements-dev.txt
-  - python3 app/run_migration.py
   - pytest --cov=app tests/
 
 
@@ -42,7 +41,6 @@ test-api-mysql:
   - source venv/bin/activate
   script:
   - pip3 install -r requirements-dev.txt
-  - python3 app/run_migration.py
   - pytest --cov=app tests/
 
 pages:

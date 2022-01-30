@@ -11,6 +11,6 @@ from app.run_migration import run_migrations
 
 @pytest.fixture(scope="function")
 def client() -> Generator:
-    run_migrations(DATABASE_URL)
+    run_migrations()
     with TestClient(app) as c:
         yield c

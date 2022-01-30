@@ -17,4 +17,3 @@ async def add_user(createRequest: UserCreateRequest):
     entity = User(**properties)
     await entity.save()
     return entity
-
