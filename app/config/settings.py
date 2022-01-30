@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
     DATABASE_URI: str = "sqlite:///db.sqlite"
     TEST_DATABASE: bool = False
+    ACCESS_TOKEN_EXPIRE_HOURS: int = 24
 
     class Config:
         env_file = ".env"

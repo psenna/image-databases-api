@@ -1,5 +1,5 @@
 from tests.factories.user_factory import UserFactory
-from app.model.user import User
+from app.models.user import User
 import pytest
 
 def test_create_valid_user():
