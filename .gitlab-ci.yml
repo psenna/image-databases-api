@@ -5,12 +5,11 @@ stages:
 variables:
   PYTHON_IMAGE: python:3.10-slim-buster
 
-cache:
-  paths:
-    - .cache/pip
-    - venv/
-
 test-api-sqlite:
+  cache:
+    paths:
+      - .cache/pip
+      - venv/
   stage: test
   image: "$PYTHON_IMAGE"
   coverage: "/^TOTAL.+?(\\d+\\%)$/"
@@ -24,6 +23,10 @@ test-api-sqlite:
 
 
 test-api-mysql:
+  cache:
+    paths:
+      - .cache/pip
+      - venv/
   variables:
     MYSQL_PASSWORD: mysql
     MYSQL_USER: mysql
@@ -44,6 +47,10 @@ test-api-mysql:
   - pytest --cov=app tests/
 
 pages:
+  cache:
+    paths:
+      - .cache/pip
+      - venv/
   stage: deploy
   image: "$PYTHON_IMAGE"
   before_script:

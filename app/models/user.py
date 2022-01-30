@@ -10,6 +10,7 @@ class User(ormar.Model):
         metadata = metadata
         database = database
         tablename = "users"
+        constraints = [ormar.UniqueColumns("email")]
 
     id: int = ormar.Integer(primary_key=True)
     name: str = ormar.String(max_length=100)
