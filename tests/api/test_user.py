@@ -1,4 +1,4 @@
-from distutils.command import config
+from multiprocessing import context
 import ormar
 from fastapi.testclient import TestClient
 
@@ -92,7 +92,7 @@ async def test_update_non_existent_user_by_id(client: TestClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_update_user_by_id(client: TestClient) -> None:
+async def test_delete_user_by_id(client: TestClient) -> None:
     atributos = UserFactory.get_valid_user_properties()
     user = User(**atributos)
     await user.save()    
@@ -110,3 +110,21 @@ async def test_delete_non_existent_user_by_id(client: TestClient) -> None:
     response = client.delete("/users/1")
 
     assert response.status_code == 404
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('test_data', [
+    {'body': {"email": "pessoa@email.com", "password": "password"}, 'status': 200},
+    {'body': {"email": "notsameperson@email.com", "password": "password"}, 'status': 403},
+    {'body': {"email": "pessoa@email.com", "password": "worng"}, 'status': 403},
+    {'body': {"password": "worng"}, 'status': 422},
+    {'body': {"email": "pessoa@email.com"}, 'status': 422},
+])
+async def test_login(client: TestClient, test_data) -> None:
+    atributos = UserFactory.get_valid_user_properties()
+    user = User(**atributos)
+    await user.save()
+
+    response = client.post(f"/users/login", json=test_data['body'])
+    content = response.json()
+
+    assert response.status_code == test_data['status']

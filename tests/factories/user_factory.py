@@ -1,3 +1,4 @@
+from app.config.security import get_password_hash
 from app.models.user import User
 
 class UserFactory():
@@ -7,7 +8,7 @@ class UserFactory():
         "id": 0,
         "name": "Nome pessoa",
         "email": "pessoa@email.com",
-        "hash_password": "aaaaaaaa",
+        "hash_password": get_password_hash("password"),
     }
 
     @classmethod

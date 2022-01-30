@@ -1,11 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter
-from app.controllers.decorators.create_controller import create_controller
+from fastapi import APIRouter, Depends, HTTPException
+from app.config.security import create_access_token, verify_password
 from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
+from app.models.requests.login_request import LoginRequest
 from app.models.requests.user_create_request import UserCreateRequest
 from app.models.requests.user_update_request import UserUpdateRequest
 from app.models.responses.user_response import UserResponse
@@ -32,7 +33,7 @@ async def get_all_users(page: int = 1, page_size: int = 20):
 async def get_user(id: int):    
     pass
 
-@router.patch("/{id}")
+@router.patch("/{id}", response_model=UserResponse)
 @patch_controller(User)
 async def patch_user(update_request: UserUpdateRequest, id: int):
     pass
@@ -41,3 +42,13 @@ async def patch_user(update_request: UserUpdateRequest, id: int):
 @delete_controller(User)
 async def delete_user(id: int):
     pass
+
+@router.post("/login")
+async def login(login_request: LoginRequest):
+    user = await User.objects.get_or_none(email=login_request.email)
+    if not user or not verify_password(login_request.password, user.hash_password):
+        raise HTTPException(status_code=403, detail="Worng user email or password!")
+    return {
+        "access_token": create_access_token(user.id),
+        "token_type": "bearer",
+    }
