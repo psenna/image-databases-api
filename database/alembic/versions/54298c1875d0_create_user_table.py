@@ -5,6 +5,7 @@ Revises:
 Create Date: 2022-01-27 18:43:10.945429
 
 """
+from enum import unique
 from alembic import op
 import sqlalchemy as sa
 
@@ -21,7 +22,7 @@ def upgrade():
         'users',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(100), nullable=False),
-        sa.Column('email', sa.String(100), nullable=False),
+        sa.Column('email', sa.String(100), nullable=False, unique=True),
         sa.Column('hash_password', sa.String(), nullable=False),
         sa.Column("is_superuser", sa.Boolean(), nullable=True),
     )

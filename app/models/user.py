@@ -1,4 +1,5 @@
 from email.policy import default
+from enum import unique
 import ormar
 import re
 from pydantic import validator
@@ -10,11 +11,10 @@ class User(ormar.Model):
         metadata = metadata
         database = database
         tablename = "users"
-        constraints = [ormar.UniqueColumns("email")]
 
     id: int = ormar.Integer(primary_key=True)
     name: str = ormar.String(max_length=100)
-    email: str = ormar.String(max_length=100)
+    email: str = ormar.String(max_length=100, unique=True)
     hash_password: str = ormar.String(max_length=255)
     is_superuser: bool = ormar.Boolean(default=False)
 

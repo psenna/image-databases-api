@@ -1,12 +1,10 @@
-from pydantic import BaseModel, Field
-from sqlalchemy import false
-
+from pydantic import BaseModel
 from app.config.security import get_password_hash
 
 class UserCreateRequest(BaseModel):
     name: str
     email: str
-    password: str = Field(title="User password", Optional=false)
+    password: str
     
     class Config:
         exclude = {'password'}

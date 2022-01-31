@@ -1,3 +1,4 @@
+from enum import unique
 import ormar
 from app.config.database import metadata, database
 
@@ -8,4 +9,4 @@ class Dataset(ormar.Model):
         tablename = "datasets"
 
     id: int = ormar.Integer(primary_key=True)
-    name: str = ormar.String(max_length=255)
+    name: str = ormar.String(min_length=5, max_length=255, unique=True)

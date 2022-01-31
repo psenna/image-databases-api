@@ -2,12 +2,13 @@ import ormar
 from functools import wraps
 
 from app.controllers.decorators.entity_not_found import entity_not_found
+from app.models.user import User
 
 def get_one_controller(model: ormar.Model, select_related=[]):
     def inner(func):
         @entity_not_found
         @wraps(func)
-        async def wrapper(id: int):
+        async def wrapper(current_user: User, id: int):
             query = model.objects
             if len(select_related):
                 query = query.select_related(select_related)

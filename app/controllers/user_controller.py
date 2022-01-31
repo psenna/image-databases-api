@@ -11,11 +11,15 @@ from app.models.requests.user_create_request import UserCreateRequest
 from app.models.requests.user_update_request import UserUpdateRequest
 from app.models.responses.user_response import UserResponse
 from app.models.user import User
+from app.controllers.dependencies import user_dependencie
 
 router = APIRouter()
 
 @router.post("/", response_model=UserResponse)
-async def add_user(createRequest: UserCreateRequest):
+async def add_user(
+    createRequest: UserCreateRequest,
+    current_user: User = Depends(user_dependencie.get_current_superuser)
+    ):
     properties = createRequest.dict()
     properties['hash_password'] = createRequest.hash_password
     del properties['password']
@@ -25,22 +29,30 @@ async def add_user(createRequest: UserCreateRequest):
 
 @router.get("/", response_model=List[UserResponse])
 @get_all_controller(User)
-async def get_all_users(page: int = 1, page_size: int = 20):
+async def get_all_users(
+    current_user: User = Depends(user_dependencie.get_current_superuser),
+    page: int = 1, page_size: int = 20):
     pass
 
 @router.get("/{id}", response_model=UserResponse)
 @get_one_controller(User)
-async def get_user(id: int):    
+async def get_user(
+    id: int,
+    current_user: User = Depends(user_dependencie.get_current_user)):    
     pass
 
 @router.patch("/{id}", response_model=UserResponse)
 @patch_controller(User)
-async def patch_user(update_request: UserUpdateRequest, id: int):
+async def patch_user(
+    update_request: UserUpdateRequest, id: int,
+    current_user: User = Depends(user_dependencie.get_current_superuser)):
     pass
 
 @router.delete("/{id}")
 @delete_controller(User)
-async def delete_user(id: int):
+async def delete_user(
+    id: int,
+    current_user: User = Depends(user_dependencie.get_current_superuser)):
     pass
 
 @router.post("/login")
