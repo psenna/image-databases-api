@@ -13,7 +13,7 @@ class TokenPayload(BaseModel):
     sub: Optional[int] = None
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl="/users/login"
+    tokenUrl="/users/auth-token"
 )
 
 async def get_current_user(

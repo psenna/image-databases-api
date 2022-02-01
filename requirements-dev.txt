@@ -38,6 +38,7 @@ ormar==0.10.24
 packaging==21.3
 parameterized==0.8.1
 passlib==1.7.4
+Pillow==9.0.0
 pluggy==1.0.0
 py==1.11.0
 pyasn1==0.4.8

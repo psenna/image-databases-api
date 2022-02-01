@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from app.config.security import create_access_token, verify_password
 from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.get_all_controller import get_all_controller
@@ -17,11 +17,11 @@ router = APIRouter()
 
 @router.post("/", response_model=UserResponse)
 async def add_user(
-    createRequest: UserCreateRequest,
+    create_request: UserCreateRequest,
     current_user: User = Depends(user_dependencie.get_current_superuser)
     ):
-    properties = createRequest.dict()
-    properties['hash_password'] = createRequest.hash_password
+    properties = create_request.dict()
+    properties['hash_password'] = create_request.hash_password
     del properties['password']
     entity = User(**properties)
     await entity.save()
@@ -55,10 +55,10 @@ async def delete_user(
     current_user: User = Depends(user_dependencie.get_current_superuser)):
     pass
 
-@router.post("/login")
-async def login(login_request: LoginRequest):
-    user = await User.objects.get_or_none(email=login_request.email)
-    if not user or not verify_password(login_request.password, user.hash_password):
+@router.post("/auth-token")
+async def login(username: str = Form(...), password: str = Form(...)):
+    user = await User.objects.get_or_none(email=username)
+    if not user or not verify_password(password, user.hash_password):
         raise HTTPException(status_code=403, detail="Worng user email or password!")
     return {
         "access_token": create_access_token(user.id),

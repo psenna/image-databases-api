@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///db.sqlite"
     TEST_DATABASE: bool = False
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24
+    THUMBNAIL_SIZE: int = 36
 
     class Config:
         env_file = ".env"

@@ -20,9 +20,11 @@ def upgrade():
     op.create_table(
         'images',
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.LargeBinary(), nullable=False),
-        sa.Column("dataset_id", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(["dataset_id"], ["datasets.id"],),
+        sa.Column('name', sa.String(), nullable=False),
+        sa.Column('data', sa.LargeBinary(), nullable=False),
+        sa.Column('thumbnail', sa.LargeBinary(), nullable=False),
+        sa.Column("dataset", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(["dataset"], ["datasets.id"],),
     )
 
 def downgrade():

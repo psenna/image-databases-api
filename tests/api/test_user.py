@@ -120,6 +120,32 @@ async def test_delete_user_by_id(client: TestClient, super_user_token_header: Di
     with pytest.raises(ormar.exceptions.NoMatch): 
         await User.objects.get(id=user.id)
 
+@pytest.mark.asyncio
+async def test_cant_delete_user_by_id_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
+    attributes = UserFactory.get_valid_user_properties()
+    user = User(**attributes)
+    await user.save()    
+    
+    response = client.delete(f"/users/{user.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 403
+
+    await User.objects.get(id=user.id)
+
+@pytest.mark.asyncio
+async def test_cant_delete_user_by_id_with_unlogged_user(client: TestClient) -> None:
+    attributes = UserFactory.get_valid_user_properties()
+    user = User(**attributes)
+    await user.save()    
+    
+    response = client.delete(f"/users/{user.id}")
+    content = response.json()
+
+    assert response.status_code == 401
+
+    await User.objects.get(id=user.id)
+
 
 async def test_delete_non_existent_user_by_id(client: TestClient, super_user_token_header: Dict[str, str]) -> None:  
     response = client.delete("/users/100", headers=super_user_token_header)
@@ -128,18 +154,18 @@ async def test_delete_non_existent_user_by_id(client: TestClient, super_user_tok
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('test_data', [
-    {'body': {"email": "pessoa@email.com", "password": "password"}, 'status': 200},
-    {'body': {"email": "notsameperson@email.com", "password": "password"}, 'status': 403},
-    {'body': {"email": "pessoa@email.com", "password": "worng"}, 'status': 403},
+    {'body': {"username": "pessoa@email.com", "password": "password"}, 'status': 200},
+    {'body': {"username": "notsameperson@email.com", "password": "password"}, 'status': 403},
+    {'body': {"username": "pessoa@email.com", "password": "worng"}, 'status': 403},
     {'body': {"password": "worng"}, 'status': 422},
-    {'body': {"email": "pessoa@email.com"}, 'status': 422},
+    {'body': {"username": "pessoa@email.com"}, 'status': 422},
 ])
-async def test_login(client: TestClient, test_data, super_user_token_header: str) -> None:
+async def test_login(client: TestClient, test_data) -> None:
     attributes = UserFactory.get_valid_user_properties()
     user = User(**attributes)
     await user.save()
 
-    response = client.post(f"/users/login", json=test_data['body'], headers=super_user_token_header)
+    response = client.post(f"/users/auth-token", data=test_data['body'])
     content = response.json()
 
     assert response.status_code == test_data['status']

@@ -1,3 +1,7 @@
+from urllib3 import Retry
+from app.models.dataset import Dataset
+
+
 class DatasetFactory():
     @classmethod
     def get_valid_dataset_properties(cls):
@@ -9,3 +13,9 @@ class DatasetFactory():
     @classmethod
     def get_valid_dataset_request(cls):
         return cls.get_valid_dataset_properties()
+    
+    @classmethod
+    async def create_dataset(cls) -> Dataset:
+        new_dataset = Dataset(**cls.get_valid_dataset_properties())
+        await new_dataset.save()
+        return new_dataset
