@@ -5,14 +5,14 @@ from app.utils.image_utils import get_b64thumbnail_from_b64image
 
 class ImageFactory():
     @classmethod
-    def get_valid_dataset_properties(cls, dataset_id: int):
-        properties =  cls.get_valid_dataset_request(dataset_id)
+    def get_valid_properties(cls, dataset_id: int):
+        properties =  cls.get_valid_request(dataset_id)
         properties['thumbnail'] = get_b64thumbnail_from_b64image(properties['data'])
         return properties
 
 
     @classmethod
-    def get_valid_dataset_request(cls, dataset_id: int):
+    def get_valid_request(cls, dataset_id: int):
         return {
             "id": 0,
             "name": "image.png",

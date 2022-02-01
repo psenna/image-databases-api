@@ -12,7 +12,7 @@ from tests.factories.image_factory import ImageFactory
 async def test_create_image_with_regularuser(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:    
     dataset = await DatasetFactory.create_dataset()
     
-    image_request = ImageFactory.get_valid_dataset_request(dataset.id)
+    image_request = ImageFactory.get_valid_request(dataset.id)
     
     response = client.post("/images/", json=image_request, headers=regular_user_token_header)
     content = response.json()
@@ -24,7 +24,7 @@ async def test_create_image_with_regularuser(client: TestClient, regular_user_to
 async def test_list_all_images_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
     dataset = await DatasetFactory.create_dataset()
     
-    image_properties = ImageFactory.get_valid_dataset_properties(dataset.id)
+    image_properties = ImageFactory.get_valid_properties(dataset.id)
 
     image = Image(**image_properties)
     await image.save()
@@ -39,7 +39,7 @@ async def test_list_all_images_with_regular_user(client: TestClient, regular_use
 async def test_get_one_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
     dataset = await DatasetFactory.create_dataset()
     
-    image_properties = ImageFactory.get_valid_dataset_properties(dataset.id)
+    image_properties = ImageFactory.get_valid_properties(dataset.id)
 
     image = Image(**image_properties)
     await image.save()
@@ -55,7 +55,7 @@ async def test_get_one_image_with_regular_user(client: TestClient, regular_user_
 async def test_cant_get_one_image_with_unlogged_user(client: TestClient) -> None:
     dataset = await DatasetFactory.create_dataset()
     
-    image_properties = ImageFactory.get_valid_dataset_properties(dataset.id)
+    image_properties = ImageFactory.get_valid_properties(dataset.id)
 
     image = Image(**image_properties)
     await image.save()
@@ -69,7 +69,7 @@ async def test_cant_get_one_image_with_unlogged_user(client: TestClient) -> None
 async def test_delete_one_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
     dataset = await DatasetFactory.create_dataset()
     
-    image_properties = ImageFactory.get_valid_dataset_properties(dataset.id)
+    image_properties = ImageFactory.get_valid_properties(dataset.id)
 
     image = Image(**image_properties)
     await image.save()
@@ -86,7 +86,7 @@ async def test_delete_one_image_with_regular_user(client: TestClient, regular_us
 async def test_cant_delete_one_image_with_unlogged_user(client: TestClient) -> None:
     dataset = await DatasetFactory.create_dataset()
     
-    image_properties = ImageFactory.get_valid_dataset_properties(dataset.id)
+    image_properties = ImageFactory.get_valid_properties(dataset.id)
 
     image = Image(**image_properties)
     await image.save()

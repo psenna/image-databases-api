@@ -1,6 +1,7 @@
 import ormar
 from app.config.database import metadata, database
 from app.models.dataset import Dataset
+from app.models.label import Label
 
 class Image(ormar.Model):
     class Meta:
@@ -20,3 +21,7 @@ class Image(ormar.Model):
         Dataset,
         skip_reverse=True
     )
+    labels = ormar.ManyToMany(Label,
+        skip_reverse=True,
+        through_relation_name="image_id",
+        through_reverse_relation_name="label_id")

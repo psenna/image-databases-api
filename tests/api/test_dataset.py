@@ -27,8 +27,6 @@ async def test_cant_create_dataset_unlogged_user(client: TestClient) -> None:
         "/datasets/",
          json=request_body)
 
-    content = response.json()
-
     assert response.status_code == 401
 
 @pytest.mark.asyncio
@@ -54,8 +52,6 @@ async def test_cant_list_all_datasets_unlogged_user(client: TestClient) -> None:
     
     response = client.get(
         "/datasets/")
-
-    content = response.json()
 
     assert response.status_code == 401
 
@@ -100,8 +96,6 @@ async def test_cant_list_one_dataset_with_unlogged_user(client: TestClient) -> N
     response = client.get(
         f"/datasets/{dataset.id}")
 
-    content = response.json()
-
     assert response.status_code == 401
 
 
@@ -117,8 +111,6 @@ async def test_cant_update_dataset_with_unlogged_user(client: TestClient) -> Non
         f"/datasets/{dataset.id}",
         json=update_request)
 
-    content = response.json()
-
     assert response.status_code == 401
 
 @pytest.mark.asyncio
@@ -130,8 +122,6 @@ async def test_delete_dataset_with_regular_user(client: TestClient, regular_user
     response = client.delete(
         f"/datasets/{dataset.id}",
         headers=regular_user_token_header)
-
-    content = response.json()
 
     assert response.status_code == 200
     with pytest.raises(ormar.exceptions.NoMatch): 
@@ -145,8 +135,6 @@ async def test_cant_delete_dataset_with_unlogged_user(client: TestClient) -> Non
     
     response = client.delete(
         f"/datasets/{dataset.id}")
-
-    content = response.json()
 
     assert response.status_code == 401
     
