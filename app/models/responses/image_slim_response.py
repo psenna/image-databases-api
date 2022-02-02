@@ -6,6 +6,7 @@ from app.models.responses.dataset_response import DatasetResponse
 
 class ImageSlimResponse(BaseModel):
     """Image response without the image data"""
+    id: int
     name: str
     thumbnail: bytes
     dataset: Optional[DatasetResponse]

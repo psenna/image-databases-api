@@ -1,3 +1,0 @@
-# Configuração
-
-## Variáveis de ambiente

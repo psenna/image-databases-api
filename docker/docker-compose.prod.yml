@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  api:
+    restart: always
+    image: registry.gitlab.com/psenna/image-databases-api
+    environment:
+      PROJECT_NAME: ImageDatasetApi
+      SECRET_KEY: secretkey123
+      DATABASE_URL: sqlite:///db.sqlite
+      ACCESS_TOKEN_EXPIRE_HOURS: 24
+      THUMBNAIL_SIZE: 36
+      ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+
