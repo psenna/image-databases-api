@@ -5,6 +5,7 @@ from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
+from app.models.filters.label_filters import LabelFilters
 from app.models.label import Label
 from app.models.requests.label_create_request import LabelCreateRequest
 from app.models.requests.label_update_request import LabelUpdateRequest
@@ -27,14 +28,20 @@ async def add_label(
     pass
 
 @router.get("/", response_model=Page[LabelResponse])
-@get_all_controller(Label)
 async def get_all_labels(
     current_user: User = Depends(user_dependencie.get_current_user),
-    page: int = 1, page_size: int = 20):
-    """
-    List all labels with pagination.
-    """
-    pass
+    page: int = 1, page_size: int = 20, filters: LabelFilters = Depends()):
+    query = Label.objects
+    if filters.label_name:
+        query = query.filter(name=filters.label_name)
+    query = query.paginate(page=page, page_size=page_size)
+    total = await query.count()
+    return {
+        "items": await query.all(),
+        "total": total,
+        "page_size": page_size,
+        "page": page
+        }
 
 @router.get("/{id}", response_model=LabelResponse)
 @get_one_controller(Label)

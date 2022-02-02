@@ -1,6 +1,7 @@
 stages:
 - test
 - deploy
+- build
 
 variables:
   PYTHON_IMAGE: python:3.10-slim-buster
@@ -47,3 +48,19 @@ sast:
   stage: test
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+
+buid-image:
+  variables:
+    CONTAINER_IMAGE: registry.gitlab.com/psenna/image-databases-api
+  services:
+    - docker-dind:latest
+  image: docker:latest
+  stage: build
+  only:
+  - tags
+  script:
+    - docker build -t $CONTAINER_IMAGE:$CI_COMMIT_TAG .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_TAG
+    - docker tags $CONTAINER_IMAGE:$CI_COMMIT_TAG $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:lates
