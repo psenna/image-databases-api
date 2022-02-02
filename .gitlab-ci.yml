@@ -10,6 +10,8 @@ test-api-sqlite:
     paths:
       - .cache/pip
       - venv/
+  variables:
+    DATABASE_URL: sqlite:///db.sqlite
   stage: test
   image: "$PYTHON_IMAGE"
   coverage: "/^TOTAL.+?(\\d+\\%)$/"

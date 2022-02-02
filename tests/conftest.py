@@ -1,7 +1,7 @@
 import os
 
 import pytest_asyncio
-DATABASE_URL = 'sqlite:///testedb.sqlite'
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite')
 os.environ['DATABASE_URL'] = DATABASE_URL
 os.environ['TEST_DATABASE'] = 'True'
 
