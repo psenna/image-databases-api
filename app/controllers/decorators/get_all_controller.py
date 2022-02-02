@@ -12,6 +12,13 @@ def get_all_controller(model: ormar.Model, select_related=[], exclude_fields=[])
                 query = query.select_related(select_related)
             if len(exclude_fields):
                 query = query.exclude_fields(exclude_fields)
-            return await query.paginate(page=page, page_size=page_size).all()
+            query = query.paginate(page=page, page_size=page_size)
+            total = await query.count()
+            return {
+                "items": await query.all(),
+                "total": total,
+                "page_size": page_size,
+                "page": page
+            }
         return wrapper
     return inner

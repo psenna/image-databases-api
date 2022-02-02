@@ -1,4 +1,3 @@
-from typing import List
 from fastapi import APIRouter, Depends
 from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
@@ -9,6 +8,7 @@ from app.models.label import Label
 from app.models.requests.label_create_request import LabelCreateRequest
 from app.models.requests.label_update_request import LabelUpdateRequest
 from app.models.responses.Label_response import LabelResponse
+from app.models.responses.page import Page
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
@@ -22,7 +22,7 @@ async def add_label(
     ):
     pass
 
-@router.get("/", response_model=List[LabelResponse])
+@router.get("/", response_model=Page[LabelResponse])
 @get_all_controller(Label)
 async def get_all_labels(
     current_user: User = Depends(user_dependencie.get_current_user),

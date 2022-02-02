@@ -15,7 +15,8 @@ async def test_list_all_users_with_superuser(client: TestClient, super_user_toke
     content = response.json()
 
     assert response.status_code == 200
-    assert len(content) == 1
+    assert content['total'] == 1
+    assert len(content['items']) == 1
 
 async def test_create_user_with_superuser(client: TestClient, super_user_token_header: Dict[str, str]) -> None:   
     request_body = UserFactory.get_valid_user_request()

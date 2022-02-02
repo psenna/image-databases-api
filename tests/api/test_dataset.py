@@ -42,7 +42,7 @@ async def test_list_all_datasets_regular_user(client: TestClient, regular_user_t
     content = response.json()
 
     assert response.status_code == 200
-    assert len(content) == 1
+    assert content['total'] == 1
 
 @pytest.mark.asyncio
 async def test_cant_list_all_datasets_unlogged_user(client: TestClient) -> None:   

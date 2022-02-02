@@ -33,7 +33,7 @@ async def test_list_all_images_with_regular_user(client: TestClient, regular_use
     content = response.json()
 
     assert response.status_code == 200
-    assert len(content) == 1
+    assert content['total'] == 1
 
 @pytest.mark.asyncio
 async def test_get_one_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:

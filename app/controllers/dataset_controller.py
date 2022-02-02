@@ -1,4 +1,3 @@
-from typing import List
 from fastapi import APIRouter, Depends
 from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
@@ -10,6 +9,7 @@ from app.models.requests.dataset_create_request import DatasetCreateRequest
 from app.models.requests.dataset_update_request import DatasetUpdateRequest
 
 from app.models.responses.dataset_response import DatasetResponse
+from app.models.responses.page import Page
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
@@ -23,7 +23,7 @@ async def add_dataset(
     ):
     pass
 
-@router.get("/", response_model=List[DatasetResponse])
+@router.get("/", response_model=Page[DatasetResponse])
 @get_all_controller(Dataset)
 async def get_all_datasets(
     current_user: User = Depends(user_dependencie.get_current_user),
