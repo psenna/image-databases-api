@@ -52,10 +52,11 @@ include:
 
 buid-image:
   variables:
+    DOCKER_HOST: tcp://localhost:2375/
     CONTAINER_IMAGE: registry.gitlab.com/psenna/image-databases-api
   services:
-    - docker:dind
-  image: docker:latest
+    - docker:18.09.7-dind
+  image: docker:18.09.7
   stage: build
   only:
   - tags
