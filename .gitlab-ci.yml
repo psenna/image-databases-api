@@ -54,7 +54,7 @@ buid-image:
   variables:
     CONTAINER_IMAGE: registry.gitlab.com/psenna/image-databases-api
   services:
-    - docker-dind:latest
+    - docker:dind
   image: docker:latest
   stage: build
   only:
