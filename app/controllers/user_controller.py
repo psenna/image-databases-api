@@ -9,7 +9,7 @@ from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
 from app.models.requests.user_create_request import UserCreateRequest
 from app.models.requests.user_update_request import UserUpdateRequest
-from app.models.responses.page import Page
+from app.models.responses.user_page import UserPage
 from app.models.responses.user_response import UserResponse
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
@@ -32,7 +32,7 @@ async def add_user(
     await entity.save()
     return entity
 
-@router.get("/", response_model=Page[UserResponse])
+@router.get("/", response_model=UserPage)
 @get_all_controller(User)
 async def get_all_users(
     current_user: User = Depends(user_dependencie.get_current_superuser),

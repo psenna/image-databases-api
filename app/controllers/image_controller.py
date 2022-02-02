@@ -10,8 +10,8 @@ from app.models.image import Image
 from app.models.label import Label
 from app.models.requests.image_create_request import ImageCreateRequest
 from app.models.responses.image_full_response import ImageFullResponse
+from app.models.responses.image_page import ImagePage
 from app.models.responses.image_slim_response import ImageSlimResponse
-from app.models.responses.page import Page
 
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
@@ -30,7 +30,7 @@ async def add_image(
     await new_image.save()
     return new_image
 
-@router.get("/", response_model=Page[ImageSlimResponse])
+@router.get("/", response_model=ImagePage)
 async def get_all_images(
     current_user: User = Depends(user_dependencie.get_current_user),
     page: int = 1, page_size: int = 20, filters: ImageFilters = Depends()):

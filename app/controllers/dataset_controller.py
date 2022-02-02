@@ -8,9 +8,9 @@ from app.controllers.decorators.patch_controller import patch_controller
 from app.models.dataset import Dataset
 from app.models.requests.dataset_create_request import DatasetCreateRequest
 from app.models.requests.dataset_update_request import DatasetUpdateRequest
+from app.models.responses.dataset_page import DatasetPage
 
 from app.models.responses.dataset_response import DatasetResponse
-from app.models.responses.page import Page
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
@@ -27,7 +27,7 @@ async def add_dataset(
     """
     pass
 
-@router.get("/", response_model=Page[DatasetResponse])
+@router.get("/", response_model=DatasetPage)
 @get_all_controller(Dataset)
 async def get_all_datasets(
     current_user: User = Depends(user_dependencie.get_current_user),
