@@ -46,6 +46,31 @@ test-api-mysql:
   - pip3 install -r requirements-dev.txt
   - pytest --cov=app tests/
 
+test-api-postgres:
+  cache:
+    paths:
+      - .cache/pip
+      - venv/
+  variables:
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_DB: postgres
+    POSTGRES_HOST: postgres-test-db
+    DATABASE_URL: postgresql+psycopg2://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB
+  services:
+    - name: postgres:14
+      alias: postgres-test-db
+  stage: test
+  image: "$PYTHON_IMAGE"
+  coverage: "/^TOTAL.+?(\\d+\\%)$/"
+  before_script:
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  script:
+  - pip3 install -r requirements-dev.txt
+  - pytest --cov=app tests/
+
 pages:
   cache:
     paths:
