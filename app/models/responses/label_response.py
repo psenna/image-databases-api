@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 
 class LabelResponse(BaseModel):
-    id: int
+    id: Optional[int]
     name: Optional[str]

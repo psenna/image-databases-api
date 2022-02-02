@@ -1,6 +1,6 @@
 import base64
 import os
-
+from app.models.image import Image
 from app.utils.image_utils import get_b64thumbnail_from_b64image
 
 class ImageFactory():
@@ -19,6 +19,12 @@ class ImageFactory():
             "dataset": dataset_id,
             "data": cls.get_b64_image()
         }
+
+    @classmethod
+    async def create(cls, dataset_id: int) -> Image:
+        new_image = Image(**cls.get_valid_properties(dataset_id))
+        await new_image.save()
+        return new_image
 
 
     @classmethod

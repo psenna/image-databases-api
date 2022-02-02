@@ -1,16 +1,17 @@
-import json
 from typing import Dict
 from fastapi.testclient import TestClient
 import ormar
 import pytest
 
 from app.models.image import Image
+from app.models.label import Label
 from tests.factories.dataset_factory import DatasetFactory
 from tests.factories.image_factory import ImageFactory
+from tests.factories.label_factory import LabelFactory
 
 @pytest.mark.asyncio
 async def test_create_image_with_regularuser(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:    
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
     image_request = ImageFactory.get_valid_request(dataset.id)
     
@@ -22,12 +23,9 @@ async def test_create_image_with_regularuser(client: TestClient, regular_user_to
 
 @pytest.mark.asyncio
 async def test_list_all_images_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
-    image_properties = ImageFactory.get_valid_properties(dataset.id)
-
-    image = Image(**image_properties)
-    await image.save()
+    image = await ImageFactory.create(dataset.id)
 
     response = client.get("/images/", headers=regular_user_token_header)
     content = response.json()
@@ -37,12 +35,9 @@ async def test_list_all_images_with_regular_user(client: TestClient, regular_use
 
 @pytest.mark.asyncio
 async def test_get_one_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
-    image_properties = ImageFactory.get_valid_properties(dataset.id)
-
-    image = Image(**image_properties)
-    await image.save()
+    image = await ImageFactory.create(dataset.id)
 
     response = client.get(f"/images/{image.id}", headers=regular_user_token_header)
     content = response.json()
@@ -53,12 +48,9 @@ async def test_get_one_image_with_regular_user(client: TestClient, regular_user_
 
 @pytest.mark.asyncio
 async def test_cant_get_one_image_with_unlogged_user(client: TestClient) -> None:
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
-    image_properties = ImageFactory.get_valid_properties(dataset.id)
-
-    image = Image(**image_properties)
-    await image.save()
+    image = await ImageFactory.create(dataset.id)
 
     response = client.get(f"/images/{image.id}")
     content = response.json()
@@ -67,12 +59,9 @@ async def test_cant_get_one_image_with_unlogged_user(client: TestClient) -> None
 
 @pytest.mark.asyncio
 async def test_delete_one_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
-    image_properties = ImageFactory.get_valid_properties(dataset.id)
-
-    image = Image(**image_properties)
-    await image.save()
+    image = await ImageFactory.create(dataset.id)
 
     response = client.delete(f"/images/{image.id}", headers=regular_user_token_header)
     content = response.json()
@@ -84,15 +73,115 @@ async def test_delete_one_image_with_regular_user(client: TestClient, regular_us
 
 @pytest.mark.asyncio
 async def test_cant_delete_one_image_with_unlogged_user(client: TestClient) -> None:
-    dataset = await DatasetFactory.create_dataset()
+    dataset = await DatasetFactory.create()
     
-    image_properties = ImageFactory.get_valid_properties(dataset.id)
-
-    image = Image(**image_properties)
-    await image.save()
+    image = await ImageFactory.create(dataset.id)
 
     response = client.delete(f"/images/{image.id}")
+
+    assert response.status_code == 401
+    await Image.objects.get(id=image.id)
+
+@pytest.mark.asyncio
+async def test_add_label_to_image_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+
+    response = client.post(f"/images/{image.id}/labels/{label.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    assert content['labels'][0]['name'] == label.name
+    image_database = await Image.objects.select_all().get(id=image.id)
+    assert len(image_database.labels) == 1
+    assert image_database.labels[0].name == label.name
+
+@pytest.mark.asyncio
+async def test_add_label_to_non_existent_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    label = await LabelFactory.create()
+
+    response = client.post(f"/images/100/labels/{label.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 404
+    assert content['detail'] == 'Image not found!'
+
+
+@pytest.mark.asyncio
+async def test_add_non_existent_label_to_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+
+    response = client.post(f"/images/{image.id}/labels/100", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 404
+    assert content['detail'] == 'Label not found!'
+
+@pytest.mark.asyncio
+async def test_cant_add_label_to_image_with_unlogged_user(client: TestClient):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+
+    response = client.post(f"/images/{image.id}/labels/{label.id}")
     content = response.json()
 
     assert response.status_code == 401
-    await Image.objects.get(id=image.id)    
+    image_database = await Image.objects.select_all().get(id=image.id)
+    assert len(image_database.labels) == 0
+
+@pytest.mark.asyncio
+async def test_remove_label_from_image_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+
+    response = client.delete(f"/images/{image.id}/labels/{label.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    assert len(content['labels']) == 0
+    image_database = await Image.objects.select_all().get(id=image.id)
+    assert len(image_database.labels) == 0
+    label_database = await Label.objects.get(id=label.id)
+    assert label.name == label_database.name
+
+@pytest.mark.asyncio
+async def test_add_label_to_non_existent_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    label = await LabelFactory.create()
+
+    response = client.delete(f"/images/100/labels/{label.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 404
+    assert content['detail'] == 'Image not found!'
+
+
+@pytest.mark.asyncio
+async def test_remove_non_existent_label_from_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+
+    response = client.delete(f"/images/{image.id}/labels/100", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 404
+    assert content['detail'] == 'Label not found!'
+
+@pytest.mark.asyncio
+async def test_cant_remove_label_to_image_with_unlogged_user(client: TestClient):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+
+    response = client.delete(f"/images/{image.id}/labels/{label.id}")
+    content = response.json()
+
+    assert response.status_code == 401
+    image_database = await Image.objects.select_all().get(id=image.id)
+    assert len(image_database.labels) == 1
+    assert image_database.labels[0].name == label.name

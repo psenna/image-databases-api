@@ -32,9 +32,7 @@ async def test_cant_create_label_unlogged_user(client: TestClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_all_labels_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
     
     response = client.get(
         "/labels/",
@@ -47,9 +45,7 @@ async def test_list_all_labels_regular_user(client: TestClient, regular_user_tok
 
 @pytest.mark.asyncio
 async def test_cant_list_all_labels_with_unlogged_user(client: TestClient) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
     
     response = client.get(
         "/labels/")
@@ -60,9 +56,7 @@ async def test_cant_list_all_labels_with_unlogged_user(client: TestClient) -> No
 
 @pytest.mark.asyncio
 async def test_list_one_label_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
     
     response = client.get(
         f"/labels/{label.id}",
@@ -75,9 +69,7 @@ async def test_list_one_label_with_regular_user(client: TestClient, regular_user
 
 @pytest.mark.asyncio
 async def test_cant_list_one_label_with_unlogged_user(client: TestClient) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
     
     response = client.get(
         f"/labels/{label.id}")
@@ -88,9 +80,7 @@ async def test_cant_list_one_label_with_unlogged_user(client: TestClient) -> Non
 
 @pytest.mark.asyncio
 async def test_update_one_label_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
 
     update_request = {"name": "new_label_name"}
     
@@ -109,9 +99,7 @@ async def test_update_one_label_with_regular_user(client: TestClient, regular_us
 
 @pytest.mark.asyncio
 async def test_cant_update_one_label_with_unlogged_user(client: TestClient) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
 
     update_request = {"name": "new_label_name"}
     
@@ -128,10 +116,8 @@ async def test_cant_update_one_label_with_unlogged_user(client: TestClient) -> N
 
 @pytest.mark.asyncio
 async def test_delete_one_label_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
-    
+    label = await LabelFactory.create()
+
     response = client.delete(
         f"/labels/{label.id}",
         headers=regular_user_token_header)
@@ -144,9 +130,7 @@ async def test_delete_one_label_with_regular_user(client: TestClient, regular_us
 
 @pytest.mark.asyncio
 async def test_cant_delete_one_label_with_unlogged_user(client: TestClient) -> None:   
-    attributes = LabelFactory.get_valid_properties()
-    label = Label(**attributes)
-    await label.save()
+    label = await LabelFactory.create()
     
     response = client.delete(
         f"/labels/{label.id}")

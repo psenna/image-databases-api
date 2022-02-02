@@ -1,3 +1,4 @@
+from enum import unique
 import ormar
 from app.config.database import metadata, database
 from app.models.dataset import Dataset
@@ -10,7 +11,7 @@ class Image(ormar.Model):
         tablename = "images"
 
     id: int = ormar.Integer(primary_key=True)
-    name: str = ormar.String(max_length=255)
+    name: str = ormar.String(max_length=255, unique=True)
     data: str = ormar.LargeBinary(
         max_length=100000, represent_as_base64_str=False, nullable=True 
     )
@@ -22,6 +23,6 @@ class Image(ormar.Model):
         skip_reverse=True
     )
     labels = ormar.ManyToMany(Label,
-        skip_reverse=True,
+        skip_reverse=True,  
         through_relation_name="image_id",
         through_reverse_relation_name="label_id")

@@ -60,10 +60,8 @@ async def test_create_user_missing_attribute(client: TestClient, super_user_toke
 
 @pytest.mark.asyncio
 async def test_get_user_by_id(client: TestClient, super_user_token_header: Dict[str, str]) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()
-    
+    user = await UserFactory.create()
+
     response = client.get(f"/users/{user.id}", headers=super_user_token_header)
     content = response.json()
 
@@ -85,9 +83,7 @@ async def test_get_non_existent_user_by_id(client: TestClient, super_user_token_
     {'name': 'new_name', 'email': 'new_mail@mail.com'}
 ])
 async def test_update_user_by_id(client: TestClient, super_user_token_header: Dict[str, str], update_body) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()    
+    user = await UserFactory.create()
     
     response = client.patch(f"/users/{user.id}", json=update_body, headers=super_user_token_header)
     content = response.json()
@@ -109,9 +105,7 @@ async def test_update_non_existent_user_by_id(client: TestClient, super_user_tok
 
 @pytest.mark.asyncio
 async def test_delete_user_by_id(client: TestClient, super_user_token_header: Dict[str, str]) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()    
+    user = await UserFactory.create()
     
     response = client.delete(f"/users/{user.id}", headers=super_user_token_header)
     content = response.json()
@@ -123,9 +117,7 @@ async def test_delete_user_by_id(client: TestClient, super_user_token_header: Di
 
 @pytest.mark.asyncio
 async def test_cant_delete_user_by_id_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()    
+    user = await UserFactory.create() 
     
     response = client.delete(f"/users/{user.id}", headers=regular_user_token_header)
     content = response.json()
@@ -136,9 +128,7 @@ async def test_cant_delete_user_by_id_with_regular_user(client: TestClient, regu
 
 @pytest.mark.asyncio
 async def test_cant_delete_user_by_id_with_unlogged_user(client: TestClient) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()    
+    user = await UserFactory.create()
     
     response = client.delete(f"/users/{user.id}")
     content = response.json()
@@ -162,9 +152,7 @@ async def test_delete_non_existent_user_by_id(client: TestClient, super_user_tok
     {'body': {"username": "pessoa@email.com"}, 'status': 422},
 ])
 async def test_login(client: TestClient, test_data) -> None:
-    attributes = UserFactory.get_valid_user_properties()
-    user = User(**attributes)
-    await user.save()
+    user = await UserFactory.create()
 
     response = client.post(f"/users/auth-token", data=test_data['body'])
     content = response.json()

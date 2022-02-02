@@ -7,7 +7,7 @@ from app.controllers.decorators.patch_controller import patch_controller
 from app.models.label import Label
 from app.models.requests.label_create_request import LabelCreateRequest
 from app.models.requests.label_update_request import LabelUpdateRequest
-from app.models.responses.Label_response import LabelResponse
+from app.models.responses.label_response import LabelResponse
 from app.models.responses.page import Page
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie

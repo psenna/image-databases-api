@@ -6,7 +6,6 @@ from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
-from app.models.requests.login_request import LoginRequest
 from app.models.requests.user_create_request import UserCreateRequest
 from app.models.requests.user_update_request import UserUpdateRequest
 from app.models.responses.page import Page

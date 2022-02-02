@@ -25,7 +25,8 @@ def upgrade():
 
     op.create_table(
         'images_labels',
-        sa.Column('label_id', sa.Integer, primary_key=True),
+        sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('label_id', sa.Integer, nullable=False),
         sa.Column('image_id', sa.Integer, nullable=False),
         sa.ForeignKeyConstraint(["label_id"], ["labels.id"],),
         sa.ForeignKeyConstraint(["image_id"], ["images.id"],),

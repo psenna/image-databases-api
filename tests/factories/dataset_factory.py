@@ -14,7 +14,7 @@ class DatasetFactory():
         return cls.get_valid_dataset_properties()
     
     @classmethod
-    async def create_dataset(cls) -> Dataset:
+    async def create(cls) -> Dataset:
         new_dataset = Dataset(**cls.get_valid_dataset_properties())
         await new_dataset.save()
         return new_dataset

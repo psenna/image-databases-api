@@ -19,6 +19,12 @@ class UserFactory():
             "email": "pessoa@email.com",
             "password": "password",
         }
+    
+    @classmethod
+    async def create(cls) -> User:
+        new_image = User(**cls.get_valid_user_properties())
+        await new_image.save()
+        return new_image
 
     @classmethod
     async def get_super_user_token_headers(cls):

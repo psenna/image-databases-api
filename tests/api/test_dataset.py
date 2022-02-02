@@ -31,10 +31,8 @@ async def test_cant_create_dataset_unlogged_user(client: TestClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_all_datasets_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
-    
+    dataset = await DatasetFactory.create()
+
     response = client.get(
         "/datasets/",
         headers=regular_user_token_header)
@@ -46,10 +44,8 @@ async def test_list_all_datasets_regular_user(client: TestClient, regular_user_t
 
 @pytest.mark.asyncio
 async def test_cant_list_all_datasets_unlogged_user(client: TestClient) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
-    
+    dataset = await DatasetFactory.create()
+
     response = client.get(
         "/datasets/")
 
@@ -57,9 +53,7 @@ async def test_cant_list_all_datasets_unlogged_user(client: TestClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_one_dataset_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
+    dataset = await DatasetFactory.create()
     
     response = client.get(
         f"/datasets/{dataset.id}",
@@ -89,9 +83,7 @@ async def test_cant_list_one_inexistent_dataset_with_unlogged_user(client: TestC
 
 @pytest.mark.asyncio
 async def test_cant_list_one_dataset_with_unlogged_user(client: TestClient) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
+    dataset = await DatasetFactory.create()
     
     response = client.get(
         f"/datasets/{dataset.id}")
@@ -101,9 +93,7 @@ async def test_cant_list_one_dataset_with_unlogged_user(client: TestClient) -> N
 
 @pytest.mark.asyncio
 async def test_cant_update_dataset_with_unlogged_user(client: TestClient) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
+    dataset = await DatasetFactory.create()
 
     update_request = {"name": "newDatasetName"}
     
@@ -115,9 +105,7 @@ async def test_cant_update_dataset_with_unlogged_user(client: TestClient) -> Non
 
 @pytest.mark.asyncio
 async def test_delete_dataset_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
+    dataset = await DatasetFactory.create()
     
     response = client.delete(
         f"/datasets/{dataset.id}",
@@ -129,9 +117,7 @@ async def test_delete_dataset_with_regular_user(client: TestClient, regular_user
 
 @pytest.mark.asyncio
 async def test_cant_delete_dataset_with_unlogged_user(client: TestClient) -> None:   
-    attributes = DatasetFactory.get_valid_dataset_properties()
-    dataset = Dataset(**attributes)
-    await dataset.save()
+    dataset = await DatasetFactory.create()
     
     response = client.delete(
         f"/datasets/{dataset.id}")
