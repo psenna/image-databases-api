@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 import ormar
+from app.controllers.decorators.data_is_not_valid_image import data_is_not_a_valid_image
 from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
@@ -18,6 +19,7 @@ from app.controllers.dependencies import user_dependencie
 router = APIRouter()
 
 @router.post("/", response_model=ImageSlimResponse)
+@data_is_not_a_valid_image
 async def add_image(
         create_request: ImageCreateRequest,
         current_user: User = Depends(user_dependencie.get_current_user)

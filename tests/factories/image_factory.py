@@ -33,3 +33,10 @@ class ImageFactory():
         with open(f"{dirname}/sample_data/tela.png", "rb") as f:
             image_data = base64.b64encode(f.read()).decode('ascii')
             return image_data
+
+    @classmethod
+    def get_b64_text(cls):
+        dirname = os.path.dirname(__file__)
+        with open(f"{dirname}/sample_data/not_image.txt", "rb") as f:
+            image_data = base64.b64encode(f.read()).decode('ascii')
+            return image_data
