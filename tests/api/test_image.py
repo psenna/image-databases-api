@@ -201,3 +201,47 @@ async def test_delete_image_with_label_regular_user(client: TestClient, regular_
         await Image.objects.get(id=image.id)
     label_database = await Label.objects.get(id=label.id)
     assert label.name == label_database.name
+
+@pytest.mark.asyncio
+async def test_get_all_images_filtering_by_database_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+
+    response = client.get(f"/images/?dataset_name={dataset.name}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    
+
+@pytest.mark.asyncio
+async def test_get_all_images_filtering_by_inexistent_dataset_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+
+    response = client.get(f"/images/?dataset_name=nonexistentdataset", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    assert content['total'] == 0
+
+
+@pytest.mark.asyncio
+async def test_get_all_images_filtering_by_label_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    image2 = await ImageFactory.create(dataset.id)
+    image3 = await ImageFactory.create(dataset.id)
+    image4 = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+    await image2.labels.add(label)
+
+    response = client.get(f"/images/?label_name={label.name}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    assert content['total'] == 2

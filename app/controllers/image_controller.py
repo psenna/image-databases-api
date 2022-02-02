@@ -4,6 +4,7 @@ from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
+from app.models.filters.image_filters import ImageFilters
 from app.models.image import Image
 from app.models.label import Label
 from app.models.requests.image_create_request import ImageCreateRequest
@@ -28,11 +29,24 @@ async def add_image(
     return new_image
 
 @router.get("/", response_model=Page[ImageSlimResponse])
-@get_all_controller(Image, exclude_fields=['data'])
 async def get_all_images(
     current_user: User = Depends(user_dependencie.get_current_user),
-    page: int = 1, page_size: int = 20):
-    pass
+    page: int = 1, page_size: int = 20, filters: ImageFilters = Depends()):
+    query = Image.objects.exclude_fields(['data'])
+    if filters.dataset_name:
+        query = query.filter(dataset__name=filters.dataset_name)
+    if filters.label_name:
+        query = query.filter(labels__name=filters.label_name)
+    query = query.paginate(page=page, page_size=page_size)
+    total = await query.count()
+    return {
+        "items": await query.all(),
+        "total": total,
+        "page_size": page_size,
+        "page": page
+        }
+
+
 
 @router.get("/{id}", response_model=ImageFullResponse)
 @get_one_controller(Image, select_all=True)
