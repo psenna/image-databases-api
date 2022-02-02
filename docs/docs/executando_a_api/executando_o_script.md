@@ -44,4 +44,4 @@ API_URL=localhost:8080 USER_MAIL=asd@mail.com python3 upload_dataset.py
 
 Exemplo da saída gerada:
 
-![er](img/script.png)
+![er](../img/script.png)
