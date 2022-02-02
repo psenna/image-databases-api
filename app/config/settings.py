@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     TEST_DATABASE: bool = False
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24
     THUMBNAIL_SIZE: int = 36
+    ADMIN_PASSWORD: str = "admin"
 
     class Config:
         env_file = ".env"

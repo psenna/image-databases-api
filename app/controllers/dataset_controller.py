@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
+from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
@@ -21,6 +22,9 @@ async def add_dataset(
         create_request: DatasetCreateRequest,
         current_user: User = Depends(user_dependencie.get_current_user)
     ):
+    """
+    Create a dataset.
+    """
     pass
 
 @router.get("/", response_model=Page[DatasetResponse])
@@ -28,6 +32,9 @@ async def add_dataset(
 async def get_all_datasets(
     current_user: User = Depends(user_dependencie.get_current_user),
     page: int = 1, page_size: int = 20):
+    """
+    List all the datasets with pagination.
+    """
     pass
 
 @router.get("/{id}", response_model=DatasetResponse)
@@ -35,6 +42,9 @@ async def get_all_datasets(
 async def get_one_dataset(
     id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):    
+    """
+    Get one dataset by its id
+    """
     pass
 
 @router.patch("/{id}", response_model=DatasetResponse)
@@ -42,11 +52,20 @@ async def get_one_dataset(
 async def patch_dataset(
     update_request: DatasetUpdateRequest, id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):
+    """
+    Update a dataset. Only the dataset name can be updated.
+    """
     pass
 
 @router.delete("/{id}")
-@delete_controller(Dataset)
+@entity_not_found
 async def delete_dataset(
     id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):
-    pass
+    """
+    Delete a dataset and all the images related to it.
+    Caution, all the images in this dataset will be deleted
+    """
+    dataset = await Dataset.objects.select_all().get(id=id)
+    await dataset.images.clear(keep_reversed=False)
+    return await dataset.delete()

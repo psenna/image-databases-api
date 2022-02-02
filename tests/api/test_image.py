@@ -185,3 +185,19 @@ async def test_cant_remove_label_to_image_with_unlogged_user(client: TestClient)
     image_database = await Image.objects.select_all().get(id=image.id)
     assert len(image_database.labels) == 1
     assert image_database.labels[0].name == label.name
+
+@pytest.mark.asyncio
+async def test_delete_image_with_label_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+
+    response = client.delete(f"/images/{image.id}", headers=regular_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    with pytest.raises(ormar.exceptions.NoMatch): 
+        await Image.objects.get(id=image.id)
+    label_database = await Label.objects.get(id=label.id)
+    assert label.name == label_database.name

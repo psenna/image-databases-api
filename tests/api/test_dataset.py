@@ -3,8 +3,10 @@ from fastapi.testclient import TestClient
 import ormar
 import pytest
 from app.models.dataset import Dataset
+from app.models.image import Image
 
 from tests.factories.dataset_factory import DatasetFactory
+from tests.factories.image_factory import ImageFactory
 
 
 async def test_create_dataset_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
@@ -66,7 +68,6 @@ async def test_list_one_dataset_regular_user(client: TestClient, regular_user_to
 
 @pytest.mark.asyncio
 async def test_list_one_inexistent_dataset_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
-    
     response = client.get(
         "/datasets/100",
         headers=regular_user_token_header)
@@ -76,7 +77,6 @@ async def test_list_one_inexistent_dataset_regular_user(client: TestClient, regu
 
 @pytest.mark.asyncio
 async def test_cant_list_one_inexistent_dataset_with_unlogged_user(client: TestClient) -> None:   
-    
     response = client.get("/datasets/100")
 
     assert response.status_code == 401
@@ -126,3 +126,22 @@ async def test_cant_delete_dataset_with_unlogged_user(client: TestClient) -> Non
     
     dataset_database = await Dataset.objects.get(id=dataset.id)
     assert dataset_database.id == dataset.id
+
+
+@pytest.mark.asyncio
+async def test_delete_dataset_with_images_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
+    dataset = await DatasetFactory.create()
+    image1 = await ImageFactory.create(dataset.id)
+    image2 = await ImageFactory.create(dataset.id)
+    
+    response = client.delete(
+        f"/datasets/{dataset.id}",
+        headers=regular_user_token_header)
+
+    assert response.status_code == 200
+    with pytest.raises(ormar.exceptions.NoMatch): 
+        await Dataset.objects.get(id=dataset.id)
+    with pytest.raises(ormar.exceptions.NoMatch): 
+        await Image.objects.get(id=image1.id)
+    with pytest.raises(ormar.exceptions.NoMatch): 
+        await Image.objects.get(id=image2.id)

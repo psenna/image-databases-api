@@ -32,6 +32,3 @@ def run_migrations_test(db_uri: str = None) -> None:
 
     command.downgrade(alembic_cfg, 'base')
     command.upgrade(alembic_cfg, 'head')
-
-if __name__ ==  "__main__":
-    run_migrations(settings.DATABASE_URI)

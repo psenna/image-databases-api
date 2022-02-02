@@ -3,9 +3,13 @@ from typing import Dict
 from fastapi.testclient import TestClient
 import ormar
 import pytest
+from app.models.image import Image
 from app.models.label import Label
+from tests.factories.dataset_factory import DatasetFactory
+from tests.factories.image_factory import ImageFactory
 from tests.factories.label_factory import LabelFactory
 
+@pytest.mark.asyncio
 async def test_create_label_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
     request_body = LabelFactory.get_valid_request()
 
@@ -21,6 +25,7 @@ async def test_create_label_regular_user(client: TestClient, regular_user_token_
     dataset_label = await Label.objects.get(id=content["id"])
     assert dataset_label.name == request_body["name"]
 
+@pytest.mark.asyncio
 async def test_cant_create_label_unlogged_user(client: TestClient) -> None:   
     request_body = LabelFactory.get_valid_request()
 
@@ -140,3 +145,26 @@ async def test_cant_delete_one_label_with_unlogged_user(client: TestClient) -> N
     assert response.status_code == 401
     database_label = await Label.objects.get(id=label.id)
     assert database_label.id == label.id
+
+@pytest.mark.asyncio
+async def test_delete_one_label_in_some_images_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
+    dataset = await DatasetFactory.create()
+    image = await ImageFactory.create(dataset.id)
+    image2 = await ImageFactory.create(dataset.id)
+    label = await LabelFactory.create()
+    await image.labels.add(label)
+    await image2.labels.add(label)
+
+    response = client.delete(
+        f"/labels/{label.id}",
+        headers=regular_user_token_header)
+
+    content = response.json()
+
+    assert response.status_code == 200
+    with pytest.raises(ormar.exceptions.NoMatch): 
+        database_label = await Label.objects.get(id=label.id)
+    await Image.objects.get(id=image.id)
+    await Image.objects.get(id=image2.id)
+
+    

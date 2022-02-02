@@ -20,9 +20,7 @@ class Image(ormar.Model):
     )
     dataset: Dataset = ormar.ForeignKey(
         Dataset,
-        skip_reverse=True
     )
     labels = ormar.ManyToMany(Label,
-        skip_reverse=True,  
         through_relation_name="image_id",
         through_reverse_relation_name="label_id")
