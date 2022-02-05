@@ -22,9 +22,9 @@ class UserFactory():
     
     @classmethod
     async def create(cls) -> User:
-        new_image = User(**cls.get_valid_user_properties())
-        await new_image.save()
-        return new_image
+        new_user = User(**cls.get_valid_user_properties())
+        await new_user.save()
+        return new_user
 
     @classmethod
     async def get_super_user_token_headers(cls):

@@ -58,15 +58,11 @@ async def get_one_image(
     pass
 
 @router.delete("/{id}")
-@entity_not_found
+@delete_controller(Image)
 async def delete_image(
     id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):
-    image = await Image.objects.select_all().get(id=id)
-    labels = image.labels.copy()
-    for label in labels:
-        await image.labels.remove(label)
-    return await image.delete()
+    pass
 
 @router.post("/{image_id}/labels/{label_id}", response_model=ImageSlimResponse)
 async def add_label_image(

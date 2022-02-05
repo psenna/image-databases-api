@@ -8,7 +8,7 @@ def create_controller (model: ormar.Model):
     def inner(func):
         @wraps(func)
         async def wrapper(current_user: User, create_request: BaseModel):
-            properties = create_request.dict()
+            properties = create_request.dict(exclude_unset=True)
             entity = model(**properties)
             await entity.save()
             return entity

@@ -1,14 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, validator
+
 from app.config.security import get_password_hash
 
 class UserCreateRequest(BaseModel):
     name: str
     email: str
-    password: str
-    
-    class Config:
-        exclude = {'password'}
+    hash_password: str = Field(alias='password')
 
-    @property
-    def hash_password(self) -> str:
-        return get_password_hash(self.password)
+    @validator('hash_password')
+    def hash_the_password(cls, v):
+        return get_password_hash(v)

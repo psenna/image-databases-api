@@ -1,10 +1,9 @@
-from email.policy import default
-from enum import unique
 import ormar
 import re
 from pydantic import validator
 
 from app.config.database import metadata, database
+from app.config.security import get_password_hash
 
 class User(ormar.Model):
     class Meta:

@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Form, status
 from app.config.security import create_access_token, verify_password
+from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
@@ -17,6 +18,7 @@ from app.controllers.dependencies import user_dependencie
 router = APIRouter()
 
 @router.post("/", response_model=UserResponse)
+@create_controller(User)
 async def add_user(
     create_request: UserCreateRequest,
     current_user: User = Depends(user_dependencie.get_current_superuser)
@@ -25,12 +27,7 @@ async def add_user(
     Create a new user. Only superusers can create new users.
     The user email must be unique.
     """
-    properties = create_request.dict()
-    properties['hash_password'] = create_request.hash_password
-    del properties['password']
-    entity = User(**properties)
-    await entity.save()
-    return entity
+    pass
 
 @router.get("/", response_model=UserPage)
 @get_all_controller(User)
@@ -67,9 +64,6 @@ async def patch_user(
         )
     stored_user = await User.objects.get(id=id)
     updated_properties = update_request.dict(exclude_unset=True)
-    if "password" in updated_properties.keys():
-        updated_properties['hash_password'] = updated_properties.hash_password
-        del updated_properties['password']
     await stored_user.update(**updated_properties)
     return stored_user
 

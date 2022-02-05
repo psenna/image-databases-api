@@ -13,16 +13,11 @@ from tests.factories.user_factory import UserFactory
 from app.app import app
 from app.run_migration import run_migrations_test
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def client() -> Generator:
-    run_migrations_test()
     with TestClient(app) as c:
+        run_migrations_test()
         yield c
-
-@pytest.fixture(scope="function")
-def database() -> Generator:
-    run_migrations_test()
-    yield None
 
 @pytest.fixture(scope="function")
 async def super_user_token_header() -> Generator:

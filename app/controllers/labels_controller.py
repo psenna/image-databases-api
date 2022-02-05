@@ -64,12 +64,8 @@ async def patch_label(
     pass
 
 @router.delete("/{id}")
-@entity_not_found
+@delete_controller(Label)
 async def delete_label(
     id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):
-    label = await Label.objects.select_all().get(id=id)
-    images = label.images.copy()
-    for image in images:
-        await label.images.remove(image)
-    return await label.delete()
+    pass
