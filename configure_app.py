@@ -1,6 +1,7 @@
 from app.run_migration import run_migrations
 from app.models.user import User
 from app.config.settings import settings
+from app.config.database import database
 from app.config.security import get_password_hash
 import asyncio
 
@@ -8,6 +9,11 @@ import asyncio
 async def initial_app_config():
     print("Run migrations")
     run_migrations(settings.DATABASE_URL)
+
+    if not database.is_connected:
+        print("Create DB connection")
+        await database.connect()
+
     if not await User.objects.filter(email='admin@mail.com').exists():
         print("Create admin user")
         admin_properties = {
@@ -18,6 +24,10 @@ async def initial_app_config():
         }
         admin = User(**admin_properties)
         await admin.save()
+
+    if database.is_connected:
+        print("Close DB connection")
+        await database.disconnect()
     
 
 if __name__ ==  "__main__":

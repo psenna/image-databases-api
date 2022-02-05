@@ -1,0 +1,43 @@
+version: '3.3'
+
+
+services:
+  api:
+    restart: always
+    image: registry.gitlab.com/psenna/image-databases-api:0.0.2
+    depends_on:
+      postgres-db :
+        condition: service_healthy
+    environment:
+      PROJECT_NAME: ImageDatasetApi
+      SECRET_KEY: secretkey123
+      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/postgres
+      ACCESS_TOKEN_EXPIRE_HOURS: 24
+      THUMBNAIL_SIZE: 36
+      ADMIN_PASSWORD: admin
+    networks:
+      - image_api
+    ports:
+      - "8080:8080"
+
+  postgres-db:
+    restart: always
+    image: postgres:14
+    hostname: postgres-db
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks:
+    - image_api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  image_api:
+    driver: bridge
