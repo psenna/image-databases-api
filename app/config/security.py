@@ -6,10 +6,7 @@ from passlib.context import CryptContext
 
 from app.config.settings import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=[settings.PASSWORD_HASH_ALGORITHM], deprecated="auto")
 
 
 def create_access_token(subject: Union[str, Any]) -> str:
@@ -17,7 +14,7 @@ def create_access_token(subject: Union[str, Any]) -> str:
         hours=settings.ACCESS_TOKEN_EXPIRE_HOURS
     )
     to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
 

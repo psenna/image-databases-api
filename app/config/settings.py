@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24
     THUMBNAIL_SIZE: int = 36
     ADMIN_PASSWORD: str = "admin"
+    PASSWORD_HASH_ALGORITHM: str = "sha256_crypt"
+    JWT_ALGORITHM: str = "HS512"
 
     class Config:
         env_file = ".env"

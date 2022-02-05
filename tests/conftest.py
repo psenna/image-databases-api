@@ -6,6 +6,8 @@ DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///dbteste.sqlite')
 # DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 os.environ['DATABASE_URL'] = DATABASE_URL
 os.environ['TEST_DATABASE'] = 'True'
+os.environ['PASSWORD_HASH_ALGORITHM'] = 'md5_crypt'
+
 
 from typing import Generator
 from fastapi.testclient import TestClient

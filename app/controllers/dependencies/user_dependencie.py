@@ -6,7 +6,6 @@ from jose import jwt
 from pydantic import BaseModel, ValidationError
 
 from app.models.user import User
-from app.config import security
 from app.config.settings import settings
 
 class TokenPayload(BaseModel):
@@ -21,7 +20,7 @@ async def get_current_user(
 ) -> User:
     try:
         payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+            token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
         )
         token_data = TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):
