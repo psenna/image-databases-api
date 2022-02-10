@@ -7,6 +7,7 @@ from app.models.filters.image_filters import ImageFilters
 from app.models.image import Image
 from app.models.label import Label
 from app.models.schemes.image_schemes import ImageFullResponse, ImagePage, ImageSlimResponse, ImageCreateRequest
+from app.models.schemes.pagination_scheme import PaginationParameters
 
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
@@ -24,19 +25,20 @@ async def add_image(
 @router.get("/", response_model=ImagePage)
 async def get_all_images(
     current_user: User = Depends(user_dependencie.get_current_user),
-    page: int = 1, page_size: int = 20, filters: ImageFilters = Depends()):
+    pagination_parameters: PaginationParameters = Depends(),
+    filters: ImageFilters = Depends()):
     query = Image.objects.exclude_fields(['data'])
     if filters.dataset_name:
         query = query.filter(dataset__name=filters.dataset_name)
     if filters.label_name:
         query = query.filter(labels__name=filters.label_name)
-    query = query.paginate(page=page, page_size=page_size)
+    query = query.paginate(page=pagination_parameters.page, page_size=pagination_parameters.page_size)
     total = await query.count()
     return {
         "items": await query.all(),
         "total": total,
-        "page_size": page_size,
-        "page": page
+        "page_size": pagination_parameters.page_size,
+        "page": pagination_parameters.page
         }
 
 

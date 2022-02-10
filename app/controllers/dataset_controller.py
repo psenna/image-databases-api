@@ -7,6 +7,7 @@ from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
 from app.models.dataset import Dataset
 from app.models.schemes.dataset_schemes import DatasetCreateRequest, DatasetUpdateRequest, DatasetResponse, DatasetPage
+from app.models.schemes.pagination_scheme import PaginationParameters
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
@@ -27,7 +28,7 @@ async def add_dataset(
 @get_all_controller(Dataset)
 async def get_all_datasets(
     current_user: User = Depends(user_dependencie.get_current_user),
-    page: int = 1, page_size: int = 20):
+    pagination_parameters: PaginationParameters = Depends()):
     """
     List all the datasets with pagination.
     """

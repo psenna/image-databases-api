@@ -7,6 +7,7 @@ from app.controllers.decorators.patch_controller import patch_controller
 from app.models.filters.label_filters import LabelFilters
 from app.models.label import Label
 from app.models.schemes.label_schemes import LabelCreateRequest, LabelUpdateRequest, LabelPage, LabelResponse
+from app.models.schemes.pagination_scheme import PaginationParameters
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
@@ -26,17 +27,18 @@ async def add_label(
 @router.get("/", response_model=LabelPage)
 async def get_all_labels(
     current_user: User = Depends(user_dependencie.get_current_user),
-    page: int = 1, page_size: int = 20, filters: LabelFilters = Depends()):
+    pagination_parameters: PaginationParameters = Depends(),
+    filters: LabelFilters = Depends()):
     query = Label.objects
     if filters.label_name:
         query = query.filter(name=filters.label_name)
-    query = query.paginate(page=page, page_size=page_size)
+    query = query.paginate(page=pagination_parameters.page, page_size=pagination_parameters.page_size)
     total = await query.count()
     return {
         "items": await query.all(),
         "total": total,
-        "page_size": page_size,
-        "page": page
+        "page_size": pagination_parameters.page_size,
+        "page": pagination_parameters.page
         }
 
 @router.get("/{id}", response_model=LabelResponse)

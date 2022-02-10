@@ -7,6 +7,7 @@ from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
+from app.models.schemes.pagination_scheme import PaginationParameters
 from app.models.schemes.user_schemes import UserCreateRequest, UserUpdateRequest, UserPage, UserResponse
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
@@ -29,7 +30,7 @@ async def add_user(
 @get_all_controller(User)
 async def get_all_users(
     current_user: User = Depends(user_dependencie.get_current_superuser),
-    page: int = 1, page_size: int = 20):
+    pagination_parameters: PaginationParameters = Depends()):
     """
     List all the user in the system. Only superusers can do this.
     """
