@@ -7,6 +7,7 @@ from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
+from app.models.schemes.login_schemes import TokenResponse
 from app.models.schemes.pagination_scheme import PaginationParameters
 from app.models.schemes.user_schemes import UserCreateRequest, UserUpdateRequest, UserPage, UserResponse
 from app.models.user import User
@@ -75,7 +76,7 @@ async def delete_user(
     """
     pass
 
-@router.post("/auth-token")
+@router.post("/auth-token", response_model=TokenResponse)
 async def login(username: str = Form(...), password: str = Form(...)):
     """
     Create a user auth token. Send the username(email) and the password.

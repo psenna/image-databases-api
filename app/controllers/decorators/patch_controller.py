@@ -11,7 +11,7 @@ def patch_controller(model: ormar.Model):
         @wraps(func)
         async def wrapper(current_user: User, update_request: BaseModel, id: int):
                 stored_entity = await model.objects.get(id=id)
-                updated_properties = update_request.dict(exclude_unset=True)
+                updated_properties = update_request.dict(exclude_unset=True, exclude_none=True)
                 await stored_entity.update(**updated_properties)
                 return stored_entity
         return wrapper

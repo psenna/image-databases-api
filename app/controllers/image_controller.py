@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 import ormar
 from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
+from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.models.filters.image_filters import ImageFilters
 from app.models.image import Image
@@ -23,24 +24,12 @@ async def add_image(
     pass
 
 @router.get("/", response_model=ImagePage)
+@get_all_controller(Image)
 async def get_all_images(
     current_user: User = Depends(user_dependencie.get_current_user),
     pagination_parameters: PaginationParameters = Depends(),
     filters: ImageFilters = Depends()):
-    query = Image.objects.exclude_fields(['data'])
-    if filters.dataset_name:
-        query = query.filter(dataset__name=filters.dataset_name)
-    if filters.label_name:
-        query = query.filter(labels__name=filters.label_name)
-    query = query.paginate(page=pagination_parameters.page, page_size=pagination_parameters.page_size)
-    total = await query.count()
-    return {
-        "items": await query.all(),
-        "total": total,
-        "page_size": pagination_parameters.page_size,
-        "page": pagination_parameters.page
-        }
-
+    pass
 
 
 @router.get("/{id}", response_model=ImageFullResponse)

@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class LabelFilters(BaseModel):
-    label_name: Optional[str]
+    name: Optional[str] = Field(alias='label_name', description='Filter by label name')

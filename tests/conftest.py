@@ -1,3 +1,4 @@
+from cgitb import reset
 import os
 import pytest
 
@@ -13,14 +14,14 @@ from typing import Generator
 from fastapi.testclient import TestClient
 from tests.factories.user_factory import UserFactory
 from app.app import app
-from app.run_migration import run_migrations_test
+from app.run_migration import run_migrations
 from app.config.database import database
 
 
 @pytest.fixture
 async def client() -> Generator:
     with TestClient(app) as c:
-        run_migrations_test()
+        run_migrations(reset_database=True)
         if not database.is_connected:
             await database.connect()
         yield c

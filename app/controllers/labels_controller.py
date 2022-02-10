@@ -25,21 +25,12 @@ async def add_label(
     pass
 
 @router.get("/", response_model=LabelPage)
+@get_all_controller(Label)
 async def get_all_labels(
     current_user: User = Depends(user_dependencie.get_current_user),
     pagination_parameters: PaginationParameters = Depends(),
     filters: LabelFilters = Depends()):
-    query = Label.objects
-    if filters.label_name:
-        query = query.filter(name=filters.label_name)
-    query = query.paginate(page=pagination_parameters.page, page_size=pagination_parameters.page_size)
-    total = await query.count()
-    return {
-        "items": await query.all(),
-        "total": total,
-        "page_size": pagination_parameters.page_size,
-        "page": pagination_parameters.page
-        }
+    pass
 
 @router.get("/{id}", response_model=LabelResponse)
 @get_one_controller(Label)
