@@ -23,7 +23,7 @@ async def test_create_image_with_regularuser(client: TestClient, regular_user_to
 
 
 @pytest.mark.asyncio
-async def test_create_image_with_regularuser(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:    
+async def test_cant_create_image_using_text_file_with_regularuser(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:    
     dataset = await DatasetFactory.create()
     
     image_request = ImageFactory.get_valid_request(dataset.id)

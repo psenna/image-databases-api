@@ -14,12 +14,18 @@ from fastapi.testclient import TestClient
 from tests.factories.user_factory import UserFactory
 from app.app import app
 from app.run_migration import run_migrations_test
+from app.config.database import database
+
 
 @pytest.fixture
-def client() -> Generator:
+async def client() -> Generator:
     with TestClient(app) as c:
         run_migrations_test()
+        if not database.is_connected:
+            await database.connect()
         yield c
+        if database.is_connected:
+            await database.disconnect()
 
 @pytest.fixture(scope="function")
 async def super_user_token_header() -> Generator:

@@ -1,16 +1,12 @@
 from fastapi import APIRouter, Depends
 from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
-from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
 from app.models.filters.label_filters import LabelFilters
 from app.models.label import Label
-from app.models.requests.label_create_request import LabelCreateRequest
-from app.models.requests.label_update_request import LabelUpdateRequest
-from app.models.responses.label_page import LabelPage
-from app.models.responses.label_response import LabelResponse
+from app.models.schemes.label_schemes import LabelCreateRequest, LabelUpdateRequest, LabelPage, LabelResponse
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 

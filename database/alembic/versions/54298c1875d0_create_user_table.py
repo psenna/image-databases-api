@@ -25,6 +25,7 @@ def upgrade():
         sa.Column('email', sa.String(100), nullable=False, unique=True),
         sa.Column('hash_password', sa.String(), nullable=False),
         sa.Column("is_superuser", sa.Boolean(), nullable=True),
+        sa.Column("roles", sa.JSON(), nullable=True),
     )
 
 

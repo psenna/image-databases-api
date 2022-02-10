@@ -1,34 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException
 import ormar
-from app.controllers.decorators.data_is_not_valid_image import data_is_not_a_valid_image
+from app.controllers.decorators.create_controller import create_controller
 from app.controllers.decorators.delete_controller import delete_controller
-from app.controllers.decorators.entity_not_found import entity_not_found
-from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.models.filters.image_filters import ImageFilters
 from app.models.image import Image
 from app.models.label import Label
-from app.models.requests.image_create_request import ImageCreateRequest
-from app.models.responses.image_full_response import ImageFullResponse
-from app.models.responses.image_page import ImagePage
-from app.models.responses.image_slim_response import ImageSlimResponse
+from app.models.schemes.image_schemes import ImageFullResponse, ImagePage, ImageSlimResponse, ImageCreateRequest
 
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
 router = APIRouter()
 
-@router.post("/", response_model=ImageSlimResponse)
-@data_is_not_a_valid_image
+@router.post("/", response_model=ImageSlimResponse, )
+@create_controller(Image)
 async def add_image(
         create_request: ImageCreateRequest,
         current_user: User = Depends(user_dependencie.get_current_user)
     ):
-    dict = create_request.dict()
-    dict['thumbnail'] = create_request.thumbnail
-    new_image = Image(**dict)
-    await new_image.save()
-    return new_image
+    pass
 
 @router.get("/", response_model=ImagePage)
 async def get_all_images(

@@ -7,11 +7,7 @@ from app.controllers.decorators.delete_controller import delete_controller
 from app.controllers.decorators.entity_not_found import entity_not_found
 from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
-from app.controllers.decorators.patch_controller import patch_controller
-from app.models.requests.user_create_request import UserCreateRequest
-from app.models.requests.user_update_request import UserUpdateRequest
-from app.models.responses.user_page import UserPage
-from app.models.responses.user_response import UserResponse
+from app.models.schemes.user_schemes import UserCreateRequest, UserUpdateRequest, UserPage, UserResponse
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 

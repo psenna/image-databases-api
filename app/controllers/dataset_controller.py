@@ -6,11 +6,7 @@ from app.controllers.decorators.get_all_controller import get_all_controller
 from app.controllers.decorators.get_one_controller import get_one_controller
 from app.controllers.decorators.patch_controller import patch_controller
 from app.models.dataset import Dataset
-from app.models.requests.dataset_create_request import DatasetCreateRequest
-from app.models.requests.dataset_update_request import DatasetUpdateRequest
-from app.models.responses.dataset_page import DatasetPage
-
-from app.models.responses.dataset_response import DatasetResponse
+from app.models.schemes.dataset_schemes import DatasetCreateRequest, DatasetUpdateRequest, DatasetResponse, DatasetPage
 from app.models.user import User
 from app.controllers.dependencies import user_dependencie
 
