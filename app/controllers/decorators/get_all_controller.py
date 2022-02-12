@@ -8,7 +8,7 @@ from app.models.user import User
 def get_all_controller(model: ormar.Model, select_related=[], exclude_fields=[]):
     def inner(func):
         @wraps(func)
-        async def wrapper(current_user: User, pagination_parameters: PaginationParameters = PaginationParameters(page=1, page_size=20), filters: BaseModel = BaseModel()):
+        async def wrapper(pagination_parameters: PaginationParameters = PaginationParameters(page=1, page_size=20), filters: BaseModel = BaseModel(), current_user: User = None):
             query = model.objects
             if len(select_related):
                 query = query.select_related(select_related)

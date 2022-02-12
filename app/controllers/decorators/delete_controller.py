@@ -8,7 +8,7 @@ def delete_controller(model: ormar.Model):
     def inner(func):
         @entity_not_found
         @wraps(func)
-        async def wrapper(current_user: User, id: int):
+        async def wrapper(id: int, current_user: User = None):
             entity = await model.objects.get(id=id)
             return await entity.delete()
         return wrapper

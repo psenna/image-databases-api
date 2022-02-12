@@ -9,7 +9,7 @@ def patch_controller(model: ormar.Model):
     def inner(func):
         @entity_not_found
         @wraps(func)
-        async def wrapper(current_user: User, update_request: BaseModel, id: int):
+        async def wrapper(update_request: BaseModel, id: int, current_user: User = None):
                 stored_entity = await model.objects.get(id=id)
                 updated_properties = update_request.dict(exclude_unset=True, exclude_none=True)
                 await stored_entity.update(**updated_properties)
