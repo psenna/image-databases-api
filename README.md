@@ -1,15 +1,17 @@
 # Image Databases api
 
-[![pipeline status](https://gitlab.com/psenna/image-databases-api/badges/main/pipeline.svg)](https://gitlab.com/psenna/image-databases-api/-/commits/main)
-[![coverage report](https://gitlab.com/psenna/image-databases-api/badges/main/coverage.svg)](https://gitlab.com/psenna/image-databases-api/-/commits/main)
+![https://github.com/psenna/image-databases-api/workflows/build/badge.svg](https://github.com/collerek/ormar/workflows/build/badge.svg)
 
+[![codecov](https://codecov.io/gh/psenna/image-databases-api/branch/main/graph/badge.svg?token=H5FGPPSX8R)](https://codecov.io/gh/psenna/image-databases-api)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/psenna/image-databases-api/badge)](https://www.codefactor.io/repository/github/psenna/image-databases-api)
 
 Api para a gerencia de imagens em bases de dados
 
 
 ## Documentação
 
-https://psenna.gitlab.io/image-databases-api/
+[Docs](https://psenna.github.io/image-databases-api/)
 
 ## Bibliotecas utilizadas
 
