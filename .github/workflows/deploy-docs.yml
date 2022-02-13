@@ -22,7 +22,7 @@ jobs:
           cd docs/ 
           mkdocs build --strict --verbose
       - name: Copy APi docs
-        run: cp -Tavr ./site/ ./docs/api/
+        run: cp -Tavr ./docs/site/ ./docs/api/
       - name: Deploy
         run: |
           mkdocs gh-deploy --force
