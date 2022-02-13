@@ -1,0 +1,26 @@
+name: Builda a documentação utilizando o mkdocs MkDocs
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Master
+        uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python3.10 -m pip install --upgrade pip
+          python3.10 -m pip install "mkdocs-material" "pydoc-markdown"
+      - name: Build docs
+        run: mkdocs build --strict --verbose
+      - name: Copy APi docs
+        run: cp -Tavr ./site/ ./docs/api/
+      - name: Deploy
+        run: |
+          mkdocs gh-deploy --force

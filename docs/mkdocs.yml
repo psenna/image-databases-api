@@ -1,4 +1,9 @@
 site_name: Image-api
+repo_name: psenna/image-databases-api
+repo_url: https://github.com/psenna/image-databases-api
 theme:
     name: material
     language: pt
+    highlightjs: true
+    hljs_languages:
+      - python
