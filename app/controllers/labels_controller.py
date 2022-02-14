@@ -17,12 +17,10 @@ router = APIRouter()
 @create_controller(Label)
 async def add_label(
         create_request: LabelCreateRequest,
-        current_user: User = Depends(user_dependencie.get_current_user)
-    ):
+        current_user: User = Depends(user_dependencie.get_current_user)):
     """
     Create a label.
     """
-    pass
 
 @router.get("/", response_model=LabelPage)
 @get_all_controller(Label)
@@ -40,7 +38,6 @@ async def get_one_label(
     """
     Get one label by id
     """    
-    pass
 
 @router.patch("/{id}", response_model=LabelResponse)
 @patch_controller(Label)
@@ -50,7 +47,6 @@ async def patch_label(
     """
     Update a label by id.
     """
-    pass
 
 @router.delete("/{id}")
 @delete_controller(Label)

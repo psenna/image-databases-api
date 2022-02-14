@@ -18,12 +18,10 @@ router = APIRouter()
 @create_controller(Dataset)
 async def add_dataset(
         create_request: DatasetCreateRequest,
-        current_user: User = Depends(user_dependencie.get_current_user)
-    ):
+        current_user: User = Depends(user_dependencie.get_current_user)):
     """
     Create a dataset.
     """
-    pass
 
 @router.get("/", response_model=DatasetPage)
 @get_all_controller(Dataset)
@@ -34,7 +32,6 @@ async def get_all_datasets(
     """
     List all the datasets with pagination.
     """
-    pass
 
 @router.get("/{id}", response_model=DatasetResponse)
 @get_one_controller(Dataset)
@@ -44,7 +41,6 @@ async def get_one_dataset(
     """
     Get one dataset by its id
     """
-    pass
 
 @router.patch("/{id}", response_model=DatasetResponse)
 @patch_controller(Dataset)
@@ -54,7 +50,6 @@ async def patch_dataset(
     """
     Update a dataset. Only the dataset name can be updated.
     """
-    pass
 
 @router.delete("/{id}")
 @delete_controller(Dataset)
@@ -65,7 +60,6 @@ async def delete_dataset(
     Delete a dataset and all the images related to it.
     A dataset with images can't be deleted, clear the dataset first with DELETE /datasets/:id/images
     """
-    pass
 
 @router.delete("/{id}/images")
 @entity_not_found

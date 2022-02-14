@@ -1,5 +1,5 @@
 from typing import Dict
-from app.config.security import get_password_hash, create_access_token
+from app.config.security import get_password_hash, create_access_token, verify_password
 from app.models.user import User
 
 class UserFactory():
@@ -48,3 +48,8 @@ class UserFactory():
         await user.save()
         token = create_access_token(user.id)
         return {"Authorization": f"Bearer {token}"}
+
+
+    @classmethod
+    def verify_password(cls, plain_password: str, hashed_password: str):
+        return verify_password(plain_password, hashed_password)

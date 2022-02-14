@@ -19,8 +19,7 @@ router = APIRouter()
 @create_controller(Image)
 async def add_image(
         create_request: ImageCreateRequest,
-        current_user: User = Depends(user_dependencie.get_current_user)
-    ):
+        current_user: User = Depends(user_dependencie.get_current_user)):
     pass
 
 @router.get("/", response_model=ImagePage)

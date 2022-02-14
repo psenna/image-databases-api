@@ -25,7 +25,6 @@ async def add_user(
     Create a new user. Only superusers can create new users.
     The user email must be unique.
     """
-    pass
 
 @router.get("/", response_model=UserPage)
 @get_all_controller(User)
@@ -35,7 +34,6 @@ async def get_all_users(
     """
     List all the user in the system. Only superusers can do this.
     """
-    pass
 
 @router.get("/{id}", response_model=UserResponse)
 @get_one_controller(User)
@@ -45,7 +43,6 @@ async def get_user(
     """
     Get one user by its id.
     """
-    pass
 
 @router.patch("/{id}", response_model=UserResponse)
 @entity_not_found
@@ -74,7 +71,6 @@ async def delete_user(
     """
     Delete a user. Only a superuser can delete a user.
     """
-    pass
 
 @router.post("/auth-token", response_model=TokenResponse)
 async def login(username: str = Form(...), password: str = Form(...)):

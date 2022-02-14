@@ -174,9 +174,8 @@ async def test_add_label_to_non_existent_image_with_regular_user(client: TestCli
     assert response.status_code == 404
     assert content['detail'] == 'Image not found!'
 
-
 @pytest.mark.asyncio
-async def test_remove_non_existent_label_from_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
+async def test_remove_label_from_non_existent_image_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]):
     dataset = await DatasetFactory.create()
     image = await ImageFactory.create(dataset.id)
 

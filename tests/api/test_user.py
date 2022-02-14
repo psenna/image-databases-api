@@ -29,7 +29,10 @@ async def test_create_user_with_superuser(client: TestClient, super_user_token_h
     content = response.json()
 
     assert response.status_code == 200
-    assert content["name"] == request_body["name"]
+    created_user = await User.objects.get(id=content['id'])
+    assert created_user.name == request_body["name"]
+    assert created_user.email == request_body["email"]
+    assert UserFactory.verify_password(request_body['password'], created_user.hash_password)
 
 async def test_cant_create_user_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
     request_body = UserFactory.get_valid_user_request()
@@ -89,12 +92,27 @@ async def test_update_user_by_id(client: TestClient, super_user_token_header: Di
     content = response.json()
 
     assert response.status_code == 200
+    updated_user = await User.objects.get(id=user.id)
     assert content['id'] == user.id
     if 'email' in update_body.keys():
-        assert content['email'] == update_body['email']
-
+        assert updated_user.email == update_body['email']
     if 'name' in update_body.keys():
-        assert content['name'] == update_body['name']
+        assert updated_user.name == update_body['name']
+
+@pytest.mark.asyncio
+async def test_update_user_by_id(client: TestClient, super_user_token_header: Dict[str, str]) -> None:
+    user = await UserFactory.create()
+    update_body = {'password': 'new_password'}
+
+    response = client.patch(f"/users/{user.id}", json=update_body, headers=super_user_token_header)
+    content = response.json()
+
+    assert response.status_code == 200
+    assert content['id'] == user.id
+    updated_user = await User.objects.get(id=user.id)
+    assert user.hash_password != updated_user.hash_password
+    assert UserFactory.verify_password(update_body['password'], updated_user.hash_password)
+
 
 
 async def test_update_non_existent_user_by_id(client: TestClient, super_user_token_header: Dict[str, str]) -> None:  
