@@ -104,7 +104,7 @@ async def test_cant_update_dataset_with_unlogged_user(client: TestClient) -> Non
     assert response.status_code == 401
 
 @pytest.mark.asyncio
-async def test_delete_dataset_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
+async def test_delete_empty_dataset_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
     dataset = await DatasetFactory.create()
     
     response = client.delete(
@@ -129,7 +129,7 @@ async def test_cant_delete_dataset_with_unlogged_user(client: TestClient) -> Non
 
 
 @pytest.mark.asyncio
-async def test_delete_dataset_with_images_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
+async def test_cant_delete_dataset_with_images_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
     dataset = await DatasetFactory.create()
     image1 = await ImageFactory.create(dataset.id)
     image2 = await ImageFactory.create(dataset.id)
@@ -138,10 +138,26 @@ async def test_delete_dataset_with_images_regular_user(client: TestClient, regul
         f"/datasets/{dataset.id}",
         headers=regular_user_token_header)
 
+    assert response.status_code == 400
+    await Dataset.objects.get(id=dataset.id)
+    await Image.objects.get(id=image1.id)
+    await Image.objects.get(id=image2.id)
+
+@pytest.mark.asyncio
+async def test_delete_all_images_in_dataset_with_regular_user(client: TestClient, regular_user_token_header: Dict[str, str]) -> None:   
+    dataset = await DatasetFactory.create()
+    image1 = await ImageFactory.create(dataset.id)
+    image2 = await ImageFactory.create(dataset.id)
+    
+    response = client.delete(
+        f"/datasets/{dataset.id}/images",
+        headers=regular_user_token_header)
+
     assert response.status_code == 200
-    with pytest.raises(ormar.exceptions.NoMatch): 
-        await Dataset.objects.get(id=dataset.id)
+    dataset_saved = await Dataset.objects.select_related('images').get(id=dataset.id)
+    assert len(dataset_saved.images) == 0
     with pytest.raises(ormar.exceptions.NoMatch): 
         await Image.objects.get(id=image1.id)
     with pytest.raises(ormar.exceptions.NoMatch): 
         await Image.objects.get(id=image2.id)
+        

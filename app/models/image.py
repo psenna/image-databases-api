@@ -20,6 +20,8 @@ class Image(ormar.Model):
     )
     dataset: Dataset = ormar.ForeignKey(
         Dataset,
+        ondelete='restrict',
+        onupdate='restrict'
     )
     labels = ormar.ManyToMany(Label,
         through_relation_name="image_id",

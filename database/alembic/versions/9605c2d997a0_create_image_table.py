@@ -24,7 +24,7 @@ def upgrade():
         sa.Column('data', sa.LargeBinary(), nullable=False),
         sa.Column('thumbnail', sa.LargeBinary(), nullable=False),
         sa.Column("dataset", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(["dataset"], ["datasets.id"], ondelete='CASCADE', onupdate='CASCADE'),
+        sa.ForeignKeyConstraint(["dataset"], ["datasets.id"], ondelete='RESTRICT', onupdate='RESTRICT'),
     )
 
 def downgrade():

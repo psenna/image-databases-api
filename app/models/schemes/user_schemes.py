@@ -19,7 +19,9 @@ class UserUpdateRequest(BaseModel):
 
     @validator('hash_password', pre=True)
     def hash_the_password(cls, v):
-        return get_password_hash(v)
+        if v is not None:
+            return get_password_hash(v)
+        return v
 
 class UserResponse(BaseModel):
     id: int

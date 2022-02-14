@@ -57,14 +57,25 @@ async def patch_dataset(
     pass
 
 @router.delete("/{id}")
-@entity_not_found
+@delete_controller(Dataset)
 async def delete_dataset(
     id: int,
     current_user: User = Depends(user_dependencie.get_current_user)):
     """
     Delete a dataset and all the images related to it.
-    Caution, all the images in this dataset will be deleted
+    A dataset with images can't be deleted, clear the dataset first with DELETE /datasets/:id/images
+    """
+    pass
+
+@router.delete("/{id}/images")
+@entity_not_found
+async def delete_all_dataset_images(
+    id: int,
+    current_user: User = Depends(user_dependencie.get_current_user)):
+    """
+    Delete all the images in a dataset.
+    After this operation, the dataset can be deleted.
     """
     dataset = await Dataset.objects.select_all().get(id=id)
     await dataset.images.clear(keep_reversed=False)
-    return await dataset.delete()
+    return {"message": "The dataset was clear, now it can be deleted!"}
