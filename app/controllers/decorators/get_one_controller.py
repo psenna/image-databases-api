@@ -8,11 +8,11 @@ def get_one_controller(model: ormar.Model, select_related=[], exclude_fields=[],
     def inner(func):
         @entity_not_found
         @wraps(func)
-        async def wrapper(id: int, current_user: User = None):
+        async def wrapper(id: int, **kwargs):
             query = model.objects
-            if len(select_related):
+            if select_related:
                 query = query.select_related(select_related)
-            if len(exclude_fields):
+            if exclude_fields:
                 query = query.exclude_fields(exclude_fields)
             if select_all:
                 query = query.select_all()

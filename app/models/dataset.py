@@ -1,6 +1,5 @@
 from enum import unique
 import ormar
-from pydantic import ValidationError
 from app.config.database import metadata, database
 
 class Dataset(ormar.Model):

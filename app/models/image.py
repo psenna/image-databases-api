@@ -1,4 +1,3 @@
-from enum import unique
 import ormar
 from app.config.database import metadata, database
 from app.models.dataset import Dataset
